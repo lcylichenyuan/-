@@ -61,16 +61,48 @@ def autoNorm(dataSet):
 
 def datingClassTest():
     # 使用留出法：设置测试集比例（hold-out比例），这里使用50%的数据作为测试集
+    hoRatio = 0.50
+    datingDataMat,datingLabels = file2matrix(file_path)
+    normMat,ranges,minVals = autoNorm(datingDataMat)
+    m = normMat.shape[0]
+    numTestVecs = int(m*hoRatio)
+    errorCount = 0.0
+
+    for i in range(numTestVecs):
+        classifierResult = classify0(normMat[i,:],normMat[numTestVecs:m,:] datingLabels[numTestVecs,:],3)
+        print(f'分类器的预测结果:{classifierResult},真实结果：{datingLabels[i]}')
+        if(classifierResult != datingLabels[i]): errorCount +=1.0
+    
+    print(f'总错误率：{errorCount / float(numTestVecs)}')
+    print(errorCount)
 
 #datingClassTest()
 
 def classify0(inX, dataSet, labels, k):
    #KNN分类核心代码
+    dataSetSize = dataSet.shape[0]
+    diffMat = tile(inX,(dataSetSize,1)) - dataSet
+    sqDiffMat = diffMat**2
+    sqDistances = sqDiffMat.sum(axis = 1)
+    distances = sqDistances**0.5
+    sortedDistIndicies = distances.argsort()
+    classCount = {}
+
+    for i in range(k):
+        voteIlabel = labels[sortedDistIndicies[i]]
+        classCount[voteIlabel] = classCount.get(voteIlabel,0) + 1
+    sortedClassCount = sorted(classCount.iteritems(),key=operator.itemgetter(1),reverse=True)
+
+    return sortedClassCount[0][0]
+
 
 def classify_person():
     """
     交互式输入三项特征，使用约会数据集做 KNN 分类，并输出印象结果。
     """
+    result_list =['不感兴趣','']
+    try:
+
 
 
 # —— 死循环调用 ——

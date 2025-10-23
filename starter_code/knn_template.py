@@ -103,13 +103,32 @@ def classify_person():
     result_list =['不感兴趣','有点兴趣','非常感兴趣']
 
     try:
-        percent_tats = input("业余时间花费在")
-
-        
-      
-
+        percent_tats = input("业余时间花费在视频游戏上的时间比率（0~1，输入q退出）")
+        if percent_tats.lower() in ['q','exit']:
+            return None
+        percent_tats = float(percent_tats)
+        ff_miles = float(input("每年飞行的公里数："))
+        ice_cream = float(input("每年消耗的冰淇淋公升数："))
+    except ValueError:
+        return True
+    
+    datingDataMat, datingLabels = file2matrix(file_path)
+    normMat,ranges,minVals = autoNorm(datingDataMat)
+    in_arr = array([ff_miles,percent_tats,ice_cream])
+    classifile_result = classify0((in_arr-minVals)/ranges,normMat,datingLabels,3)
+    idx = int(classifile_result) - 1
+    desc = result_list[idx] if 0 <= idx < len(result_list) else str(classifile_result)
+    print(f"你对这个人的印象是：{desc}")
+    return True
 
 
 
 # —— 死循环调用 ——
 if __name__ == "__main__":
+    print("=== 约会数据 KNN 测试系统 ===")
+    print("输入'g'或'exit'可以退出")
+    while True:
+        flag = classify_person()
+        if flag is None:
+            print("程序已退出")
+            break

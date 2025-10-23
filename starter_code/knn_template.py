@@ -103,6 +103,9 @@ def classify_person():
     result_list =['不感兴趣','有点兴趣','非常感兴趣']
 
     try:
+        percent_tats = input("业余时间花费在")
+
+        
       
 
 
